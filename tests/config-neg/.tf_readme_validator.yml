@@ -1,0 +1,10 @@
+remove:
+  readme:
+    Description: False
+    Examples: False
+
+update:
+  inputs:
+    path: vars.tf
+  outputs:
+    path: out.tf
