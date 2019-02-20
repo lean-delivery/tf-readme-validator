@@ -1,0 +1,18 @@
+---
+dist: xenial
+sudo: required
+
+language: python
+python:
+  - "2.7"
+
+install:
+  - curl -qLo terraform-docs https://github.com/segmentio/terraform-docs/releases/download/v0.6.0/terraform-docs-v0.6.0-linux-amd64
+  - chmod +x terraform-docs
+  - PATH=$(pwd):$PATH
+  - pip install pyyaml mistune
+  - terraform-docs --version
+
+script:
+  - cd tests
+  - for DIR in *; do (echo -e "\nRunning tests in $DIR\n" && cd $DIR && python test.py); done
