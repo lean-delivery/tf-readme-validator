@@ -7,7 +7,7 @@ import json
 import yaml
 import mistune
 from subprocess import Popen, PIPE
-from var_dump import var_dump
+# from var_dump import var_dump
 
 cfg_yml = '.tf_readme_validator.yml'
 

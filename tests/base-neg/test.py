@@ -3,7 +3,7 @@
 import unittest
 
 import sys
-sys.path.append('../..')
+sys.path.append('../../bin')
 
 target = __import__('tf_readme_validator')
 main = target.main

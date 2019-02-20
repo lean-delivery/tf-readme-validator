@@ -1,6 +1,11 @@
 # Terraform README.md Validator
 
-The validation of a terraform README.md file is performed against the default specification that can tuned by the config file.
+The validation of a terraform README.md file is performed against the default specification that can be tuned by the config file.
+
+## Installation
+
+* Make sure that https://github.com/segmentio/terraform-docs is installed and terraform-docs is in $PATH
+* pip install tf-readme-validator
 
 ## Specification
 
@@ -26,7 +31,7 @@ Input and output variables are supposed to be read from **variables.tf** and **o
 
 ## Config file
 
-The default specification, inputs and outputs varibales can be tuned by means of a config file .tf_readme_validator.yml
+The default specification, inputs and outputs varibales can be tuned by means of a config file *.tf_readme_validator.yml*
 
 ### Config file methods
 
@@ -71,5 +76,4 @@ remove:
 
 ## Path for files
 
-Take into account that the validator looks for all files (README.md, variables.tf, outputs.tf and .tf_readme_validator.yml) only in the current directory.
-
+Take into account that the validator looks for all files (*README.md*, *variables.tf*, *outputs.tf* and *.tf_readme_validator.yml*) only in the current directory.
