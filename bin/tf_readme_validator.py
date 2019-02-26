@@ -11,20 +11,24 @@ from subprocess import Popen, PIPE
 
 cfg_yml = '.tf_readme_validator.yml'
 
-structure = {
+cfg = {
     'readme': {
         'Description':                  {'type': 'header',
                                          'level': 2},
         'Usage':                        {'type': 'header',
                                          'level': 2},
         'Conditional creation':         {'type': 'header',
-                                         'level': 3},
+                                         'level': 3,
+                                         'optional': True},
         'Known issues / Limitations':   {'type': 'header',
-                                         'level': 3},
+                                         'level': 3,
+                                         'optional': True},
         'Code included in this module': {'type': 'header',
-                                         'level': 3},
+                                         'level': 3,
+                                         'optional': True},
         'Examples':                     {'type': 'header',
-                                         'level': 3},
+                                         'level': 3,
+                                         'optional': True},
         'Inputs':                       {'type': 'header',
                                          'level': 2},
         'inputs table':                 {'type': 'table',
@@ -34,7 +38,8 @@ structure = {
         'outputs table':                {'type': 'table',
                                          'parent': 'Outputs'},
         'Tests':                        {'type': 'header',
-                                         'level': 2},
+                                         'level': 2,
+                                         'optional': True},
         'Terraform versions':           {'type': 'header',
                                          'level': 2},
         'Contributing':                 {'type': 'header',
@@ -43,6 +48,9 @@ structure = {
                                          'level': 2},
         'Authors':                      {'type': 'header',
                                          'level': 2},
+    },
+    'options': {
+        'optional_validate': True,
     },
     'inputs': {
         'validate': True,
@@ -57,12 +65,12 @@ structure = {
 
 def print_results():
     code = 0
-    for key in structure['readme']:
-        if 'ok' not in structure['readme'][key]:
+    for key in cfg['readme']:
+        if 'ok' not in cfg['readme'][key]:
             print(key + ' absent (E101)')
             code = 1
-        elif not structure['readme'][key]['ok']:
-            print(key + ' - ' + structure['readme'][key]['error'])
+        elif not cfg['readme'][key]['ok']:
+            print(key + ' - ' + cfg['readme'][key]['error'])
             code = 1
     return code
 
@@ -74,16 +82,20 @@ class CustomRenderer(mistune.Renderer):
         mistune.Renderer.__init__(self)
 
     def header(self, text, level, raw):
-        if text in structure['readme']:
-            if structure['readme'][text]['type'] != 'header':
-                structure['readme'][text]['ok'] = False
-                structure['readme'][text]['error'] = 'wrong header type (E102)'
-            elif structure['readme'][text]['level'] != level:
-                structure['readme'][text]['ok'] = False
-                structure['readme'][text]['error'] = \
+        if text in cfg['readme']:
+            if not cfg['options']['optional_validate'] and \
+                    'optional' in cfg['readme'][text] and \
+                    cfg['readme'][text]['optional']:
+                return ''
+            if cfg['readme'][text]['type'] != 'header':
+                cfg['readme'][text]['ok'] = False
+                cfg['readme'][text]['error'] = 'wrong header type (E102)'
+            elif cfg['readme'][text]['level'] != level:
+                cfg['readme'][text]['ok'] = False
+                cfg['readme'][text]['error'] = \
                     'wrong header level (E103)'
             else:
-                structure['readme'][text]['ok'] = True
+                cfg['readme'][text]['ok'] = True
             self.last_seen = text
         return ''
 
@@ -109,29 +121,37 @@ def validate(readme):
     markdown = mistune.Markdown(renderer=rndr)
     markdown(readme)
 
-    if structure['inputs']['validate']:
-        diff = validate_inputs_outputs(structure['inputs']['json'],
+    if cfg['inputs']['validate']:
+        diff = validate_inputs_outputs(cfg['inputs']['json'],
                                        rndr.tables['Inputs'])
         if len(diff) > 0:
-            structure['readme']['inputs table']['ok'] = False
-            structure['readme']['inputs table']['error'] = \
+            cfg['readme']['inputs table']['ok'] = False
+            cfg['readme']['inputs table']['error'] = \
                 'divergent elements: ' + ', '.join(diff) + ' (E201)'
         else:
-            structure['readme']['inputs table']['ok'] = True
+            cfg['readme']['inputs table']['ok'] = True
     else:
-        structure['readme']['inputs table']['ok'] = True
+        cfg['readme']['inputs table']['ok'] = True
 
-    if structure['outputs']['validate']:
-        diff = validate_inputs_outputs(structure['outputs']['json'],
+    if cfg['outputs']['validate']:
+        diff = validate_inputs_outputs(cfg['outputs']['json'],
                                        rndr.tables['Outputs'])
         if len(diff) > 0:
-            structure['readme']['outputs table']['ok'] = False
-            structure['readme']['outputs table']['error'] = \
+            cfg['readme']['outputs table']['ok'] = False
+            cfg['readme']['outputs table']['error'] = \
                 'divergent elements: ' + ', '.join(diff) + ' (E301)'
         else:
-            structure['readme']['outputs table']['ok'] = True
+            cfg['readme']['outputs table']['ok'] = True
     else:
-        structure['readme']['outputs table']['ok'] = True
+        cfg['readme']['outputs table']['ok'] = True
+
+
+def initialize():
+    if not cfg['options']['optional_validate']:
+        for key in cfg['readme']:
+            if 'optional' in cfg['readme'][key] and \
+                    cfg['readme'][key]['optional']:
+                cfg['readme'][key]['ok'] = True
 
 
 def load_inputs_outputs(data, name):
@@ -153,33 +173,34 @@ def load_config():
         data = yaml.load(stream)
         if 'replace' in data:
             for section in data['replace']:
-                if section not in structure:
+                if section not in cfg:
                     print('WARNING: in config skipping replace/' + section)
                     continue
-                structure[section] = data['replace'][section]
+                cfg[section] = data['replace'][section]
         elif 'update' in data:
             for section in data['update']:
-                if section not in structure:
+                if section not in cfg:
                     print('WARNING: in config skipping update/' + section)
                     continue
                 for item in data['update'][section]:
-                    structure[section][item] = data['update'][section][item]
+                    cfg[section][item] = data['update'][section][item]
         elif 'remove' in data:
             for section in data['remove']:
-                if section not in structure:
+                if section not in cfg:
                     print('WARNING: in config skipping remove/' + section)
                     continue
                 for item in data['remove'][section]:
-                    structure[section].pop(item, None)
+                    cfg[section].pop(item, None)
 
 
 def main():
     if os.path.isfile(cfg_yml):
         load_config()
-    if structure['inputs']['validate']:
-        load_inputs_outputs(structure['inputs'], 'Inputs')
-    if structure['outputs']['validate']:
-        load_inputs_outputs(structure['outputs'], 'Outputs')
+    if cfg['inputs']['validate']:
+        load_inputs_outputs(cfg['inputs'], 'Inputs')
+    if cfg['outputs']['validate']:
+        load_inputs_outputs(cfg['outputs'], 'Outputs')
+    initialize()
     with open('README.md') as md:
         validate(md.read())
     return print_results()

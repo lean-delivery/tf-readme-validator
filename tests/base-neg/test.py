@@ -7,7 +7,7 @@ sys.path.append('../../bin')
 
 target = __import__('tf_readme_validator')
 main = target.main
-readme = target.structure['readme']
+readme = target.cfg['readme']
 
 
 class Test1(unittest.TestCase):

@@ -7,16 +7,13 @@ sys.path.append('../../bin')
 
 target = __import__('tf_readme_validator')
 main = target.main
-cfg = target.cfg
+readme = target.cfg['readme']
 
 
 class Test1(unittest.TestCase):
     def test(self):
         result = main()
-        self.assertEqual(result, 1)
-        self.assertEqual('ok' in cfg['readme']['License'], False)
-        self.assertEqual('ok' in cfg['readme']['Tests'], False)
-        self.assertEqual('ok' in cfg['readme']['Authors'], False)
+        self.assertEqual(result, 0)
 
 
 if __name__ == '__main__':
