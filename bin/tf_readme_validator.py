@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import sys
 import os.path
 import re
@@ -194,6 +195,13 @@ def load_config():
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="""
+    Validates README.md file against the default specification.
+    The config file (.tf_readme_validator.yml), README.md, variables.tf
+    and outputs.tf are looked for only in the current directory.
+    """)
+    parser.parse_args()
     if os.path.isfile(cfg_yml):
         load_config()
     if cfg['inputs']['validate']:
