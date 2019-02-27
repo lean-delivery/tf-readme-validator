@@ -164,8 +164,10 @@ def load_inputs_outputs(data, name):
         code = process.wait()
         if code > 0:
             raise Exception('terraform-docs json ' + data['path'] + ' failed')
-        data['json'] = list(map(lambda x: x['Name'],
-                            json.loads(json_data)[name]))
+        json_loaded = json.loads(json_data)
+        data['json'] = []
+        if json_loaded[name] is not None:
+            data['json'] = list(map(lambda x: x['Name'], json_loaded[name]))
     else:
         print 'WARNING: cannot open ' + data['path'] + ' for reading'
         data['json'] = []
