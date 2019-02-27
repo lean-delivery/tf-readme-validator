@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='tf-readme-validator',
-      version='0.3',
+      version='0.4',
       description='Terraform README.md validator',
       url='https://github.com/lean-delivery/tf-readme-validator',
       author='Lean Delivery team',
