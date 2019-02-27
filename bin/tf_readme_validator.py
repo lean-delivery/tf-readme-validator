@@ -10,7 +10,7 @@ import mistune
 from subprocess import Popen, PIPE
 # from var_dump import var_dump
 
-version = '0.3'
+version = '0.4'
 
 cfg_yml = '.tf_readme_validator.yml'
 
