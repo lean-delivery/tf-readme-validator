@@ -10,6 +10,8 @@ import mistune
 from subprocess import Popen, PIPE
 # from var_dump import var_dump
 
+version = '0.3'
+
 cfg_yml = '.tf_readme_validator.yml'
 
 cfg = {
@@ -201,7 +203,13 @@ def main():
     The config file (.tf_readme_validator.yml), README.md, variables.tf
     and outputs.tf are looked for only in the current directory.
     """)
-    parser.parse_args()
+    parser.add_argument('-v', '--version', help='show version and exit',
+                        action="store_true")
+    args = parser.parse_args()
+    if args.version:
+        print(version)
+        return 0
+
     if os.path.isfile(cfg_yml):
         load_config()
     if cfg['inputs']['validate']:
