@@ -1,7 +1,7 @@
 # Terraform README.md Validator
 
-[![License](https://img.shields.io/badge/license-Apache-green.svg?style=flat)](https://raw.githubusercontent.com/lean-delivery/tf-readme-validator/develop/LICENSE)
-[![Build Status](https://travis-ci.org/lean-delivery/tf-readme-validator.svg?branch=develop)](https://travis-ci.org/lean-delivery/tf-readme-validator)
+[![License](https://img.shields.io/badge/license-Apache-green.svg?style=flat)](https://raw.githubusercontent.com/lean-delivery/tf-readme-validator/master/LICENSE)
+[![Build Status](https://travis-ci.org/lean-delivery/tf-readme-validator.svg?branch=master)](https://travis-ci.org/lean-delivery/tf-readme-validator)
 
 ## Summary
 
