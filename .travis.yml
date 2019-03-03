@@ -5,6 +5,7 @@ sudo: required
 language: python
 python:
   - "2.7"
+  - "3.7"
 
 install:
   - curl -qLo terraform-docs https://github.com/segmentio/terraform-docs/releases/download/v0.6.0/terraform-docs-v0.6.0-linux-amd64
@@ -15,4 +16,4 @@ install:
 
 script:
   - cd tests
-  - for DIR in *; do (echo -e "\nRunning tests in $DIR\n" && cd $DIR && python test.py); done
+  - for DIR in *; do (echo -e "\nRunning tests in $DIR\n" && cd $DIR && ./test.py); done
