@@ -15,7 +15,6 @@ class Test1(unittest.TestCase):
         result = main()
         self.assertEqual(result, 1)
         self.assertEqual('ok' in cfg['readme']['License'], False)
-        self.assertEqual('ok' in cfg['readme']['Tests'], False)
         self.assertEqual('ok' in cfg['readme']['Authors'], False)
 
 

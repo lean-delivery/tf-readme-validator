@@ -53,7 +53,7 @@ cfg = {
                                          'level': 2},
     },
     'options': {
-        'optional_validate': True,
+        'optional_validate': False,
     },
     'inputs': {
         'validate': True,
@@ -70,7 +70,7 @@ def print_results():
     code = 0
     for key in cfg['readme']:
         if 'ok' not in cfg['readme'][key]:
-            print(key + ' absent (E101)')
+            print(key + ' - absent (E101)')
             code = 1
         elif not cfg['readme'][key]['ok']:
             print(key + ' - ' + cfg['readme'][key]['error'])
