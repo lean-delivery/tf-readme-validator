@@ -15,7 +15,6 @@ class Test1(unittest.TestCase):
         result = main()
         self.assertEqual(result, 1)
         self.assertEqual('ok' in readme['Description'], False)
-        self.assertEqual('ok' in readme['Conditional creation'], False)
         self.assertEqual(readme['Terraform versions']['ok'], False)
         self.assertEqual(readme['inputs table']['ok'], False)
         self.assertEqual(readme['outputs table']['ok'], False)
